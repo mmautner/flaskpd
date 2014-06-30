@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 from flask import Flask
-import json
-from flask import jsonify
 from flask import make_response
 from flask import render_template
 from flask.ext.restful import Api
@@ -28,7 +26,7 @@ def index():
 from io import BytesIO
 import matplotlib.pyplot as plt
 from pandas.io.sql import read_sql
-from models import compile_query
+from models import compile_query_mysql
 from db import session
 from sqlalchemy import create_engine
 from settings import DB_URI
@@ -36,7 +34,7 @@ from settings import DB_URI
 @app.route('/pic.png')
 def pic2():
     """generate matplotlib png from sql query"""
-    temperatures = read_sql(compile_query(session.query(Temperature)),
+    temperatures = read_sql(compile_query_mysql(session.query(Temperature)),
                             create_engine(DB_URI))
     temperatures.set_index('year', inplace=True)
     temperatures.plot()

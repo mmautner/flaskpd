@@ -5,7 +5,6 @@
 
 from sqlalchemy import Column
 from sqlalchemy import Integer
-from sqlalchemy import String
 from sqlalchemy import Float
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -27,9 +26,10 @@ class Temperature(Base):
 # https://stackoverflow.com/questions/4617291/how-do-i-get-a-raw-compiled-sql-query-from-a-sqlalchemy-expression
 from sqlalchemy.sql import compiler
 from psycopg2.extensions import adapt as sqlescape
+from MySQLdb.converters import conversions, escape
 # or use the appropiate escape function from your db driver
 
-def compile_query(query):
+def compile_query_pg(query):
     dialect = query.session.bind.dialect
     statement = query.statement
     comp = compiler.SQLCompiler(dialect, statement)
@@ -41,6 +41,21 @@ def compile_query(query):
             v = v.encode(enc)
         params[k] = sqlescape(v)
     return (comp.string.encode(enc) % params).decode(enc)
+
+def compile_query_mysql(query):
+
+    dialect = query.session.bind.dialect
+    statement = query.statement
+    comp = compiler.SQLCompiler(dialect, statement)
+    comp.compile()
+    enc = dialect.encoding
+    params = []
+    for k in comp.positiontup:
+        v = comp.params[k]
+        if isinstance(v, unicode):
+            v = v.encode(enc)
+        params.append( escape(v, conversions) )
+    return (comp.string.encode(enc) % tuple(params)).decode(enc)
 
 if __name__ == "__main__":
     from sqlalchemy import create_engine

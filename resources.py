@@ -1,15 +1,16 @@
 
 import json
 from flask import make_response
+from flask import request
 from flask.ext.restful import Resource
 from flask.ext.restful import reqparse
-from flask.ext.restful import abort
+#from flask.ext.restful import abort
 
 from sqlalchemy import create_engine
 from settings import DB_URI
 from db import session
 from models import Temperature
-from models import compile_query
+from models import compile_query_mysql
 from pandas.io.sql import read_sql
 
 parser = reqparse.RequestParser()
@@ -21,8 +22,12 @@ class TemperatureResource(Resource):
 
 class TemperatureListResource(Resource):
     def get(self):
-        temperatures = read_sql(compile_query(session.query(Temperature)),
+        query = session.query(Temperature)
+        if request.args.get('limit'):
+            query = query.limit(int(request.args['limit']))
+        temperatures = read_sql(compile_query_mysql(query),
                                 create_engine(DB_URI))
+        
         res = make_response(temperatures.to_json(orient='records'))
         res.mimetype = 'application/json'
         return res
@@ -37,7 +42,7 @@ class TemperatureListResource(Resource):
 class TemperatureListRSResource(Resource):
     """An endpoint for accommodating rickshaw-specific JSON formatting"""
     def get(self):
-        temperatures = read_sql(compile_query(session.query(Temperature)),
+        temperatures = read_sql(compile_query_mysql(session.query(Temperature)),
                                 create_engine(DB_URI))
         temperatures.set_index('year', inplace=True)
         data = []
