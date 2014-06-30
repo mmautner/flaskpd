@@ -16,6 +16,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('year', type=str)
 
 class TemperatureResource(Resource):
+    """placeholder for individual resource endpoint"""
     pass
 
 class TemperatureListResource(Resource):
@@ -34,6 +35,7 @@ class TemperatureListResource(Resource):
         return temperature.serialize, 201
 
 class TemperatureListRSResource(Resource):
+    """An endpoint for accommodating rickshaw-specific JSON formatting"""
     def get(self):
         temperatures = read_sql(compile_query(session.query(Temperature)),
                                 create_engine(DB_URI))

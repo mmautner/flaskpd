@@ -12,20 +12,16 @@ api = Api(app)
 
 # VIEWS
 
-@app.route('/')
-def index():
-    return render_template('base.html')
-
 from models import Temperature
 from utils import get_n_hex_colors
 
-@app.route('/rickshaw')
-def rs():
+@app.route('/')
+def index():
     # skip index
     columns = Temperature.__table__.columns.keys()[1:]
     colors = get_n_hex_colors(len(columns))
     series = [{'name': k, 'color': v} for k, v in zip(columns, colors)]
-    return render_template('rs.html', series=series)
+    return render_template('rickshaw.html', series=series)
 
 # Generate chart
 
