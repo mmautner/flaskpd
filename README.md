@@ -8,8 +8,8 @@ a 'temperatures' table on the database specified in settings.py.
 
 With plain-old static-file Matplotlib:
 
-![matplotlib](./chart1.png)
+![matplotlib](./static/chart1.png)
 
 With D3.js-based [Rickshaw.js](http://code.shutterstock.com/rickshaw/):
 
-![rickshaw](./chart2.png)
+![rickshaw](./static/chart2.png)
