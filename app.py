@@ -32,8 +32,12 @@ from sqlalchemy import create_engine
 from settings import DB_URI
 
 @app.route('/pic.png')
-def pic2():
-    """generate matplotlib png from sql query"""
+def pic():
+    """generate matplotlib png
+
+    TODO: use API client library to get data, rather than directly calling SQL
+
+    """
     temperatures = read_sql(compile_query_mysql(session.query(Temperature)),
                             create_engine(DB_URI))
     temperatures.set_index('year', inplace=True)
@@ -50,8 +54,8 @@ from resources import TemperatureListResource
 from resources import TemperatureResource
 from resources import TemperatureListRSResource
 
-api.add_resource(TemperatureListResource, '/temperatures')
-api.add_resource(TemperatureResource, '/temperatures/<string:temperature_id>')
+api.add_resource(TemperatureListResource, '/temperatures', endpoint='temperatures')
+api.add_resource(TemperatureResource, '/temperatures/<int:year>', endpoint='temperature')
 api.add_resource(TemperatureListRSResource, '/temperaturesrs')
 
 if __name__ == '__main__':
