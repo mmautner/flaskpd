@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://code.shutterstock.com/rickshaw/examples/start.html -->
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="{{url_for("static", filename="d3.v3.js")}}"></script>
+  <style type="text/css"></style>
+  <script src="{{url_for("static", filename="rickshaw.min.js")}}"></script>
+</head>
+<body>
+  <div id="chart" class="rickshaw_graph"></div>
+
+<script>
+
+var graph = new Rickshaw.Graph( {
+    element: document.querySelector("#chart"), 
+    width: 500, 
+    height: 200, 
+    series: [{
+        color: 'steelblue',
+        data: [ 
+            { x: 0, y: 40 }, 
+            { x: 1, y: 49 }, 
+            { x: 2, y: 38 }, 
+            { x: 3, y: 30 }, 
+            { x: 4, y: 32 } ]
+    }]
+});
+
+graph.render();
+
+</script>
+</body></html>

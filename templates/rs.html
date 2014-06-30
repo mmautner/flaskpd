@@ -1,0 +1,55 @@
+<!doctype>
+<head>
+  <link type="text/css" rel="stylesheet" href="{{url_for("static", filename="graph.css")}}">
+  <link type="text/css" rel="stylesheet" href="{{url_for("static", filename="detail.css")}}">
+  <link type="text/css" rel="stylesheet" href="{{url_for("static", filename="legend.css")}}">
+  <link type="text/css" rel="stylesheet" href="{{url_for("static", filename="lines.css")}}">
+
+  <script src="{{url_for("static", filename="d3.v3.js")}}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <script src="{{url_for("static", filename="rickshaw.js")}}"></script>
+
+</head>
+<body>
+  <div id="chart_container">
+    <div id="chart"></div>
+    <div id="legend_container">
+      <div id="smoother" title="Smoothing"></div>
+      <div id="legend"></div>
+    </div>
+  </div>
+
+  <script>
+    var graph = new Rickshaw.Graph.Ajax( {
+
+      element: document.getElementById("chart"),
+      width: 800,
+      height: 500,
+      renderer: 'line',
+      dataURL: '/temperaturesrs',
+      onData: function(d) { console.log(d); return d },
+      onComplete: function(transport) {
+        graph = transport.graph;
+        var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+          graph: graph
+        } );
+        var legend = new Rickshaw.Graph.Legend( {
+          graph: graph,
+          element: document.getElementById('legend')
+        } );
+        var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+          graph: graph,
+          legend: legend
+        } );
+      },
+      series: [
+        {% for serie in series %}
+        {
+          name: '{{serie['name']}}',
+          color: '#{{serie['color']}}',
+        },
+        {% endfor %}
+      ]
+    } );
+  </script>
+</body>
